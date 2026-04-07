@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import './App.css'
 
 
@@ -6,36 +6,63 @@ interface FetchTodos {
   id: number;
   userId: number;
   title: string;
-  completed: boolean;
+  body: string;
 }
 const fetchTodos = async (): Promise<FetchTodos[]> => {
-  const res = await fetch('https://jsonplaceholder.typicode.com/todos');
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts');
   // if (!res.ok) {
   //   throw new Error('Failed to fetch todos');
   // }
   return res.json();
 };
 
+const FetchPosts = async (newpost: Omit<FetchTodos, 'id'>): Promise<FetchTodos> => {
+  const res = await fetch('https://jsonplaceholder.typicode.com/posts', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(newpost),
+  });
+  return res.json();
+};
 function App() {
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<FetchTodos[]>({
     queryKey: ['todo'],
     queryFn: fetchTodos
   });
+
+  const { mutate, isError, isPending, isSuccess } = useMutation({
+    mutationFn: FetchPosts 
+  })
   if (isLoading) return <p>Loading....</p>
-  if(error) return <p>Error</p>
+  if (error || isError) return <p>Error</p>
 
   // if (error instanceof Error) {
   //   return <p>Error: {error.message}</p>;
   // }
   return (
     <>
+      {isPending && <p>DATA IS BEING ADDED... </p>}
+      {isSuccess && <p>Success....</p>}
+
+
+      <button onClick={() => mutate({
+        userId: 5000,
+        title: "sunt aut facere repellat provident occaecati excepturi optio reprehenderit hallo posts",
+        body: "This is the body of this post"
+      })
+      }>
+        Add Post
+      </button>
+
+
       {data?.map((todo) => (
         <div key={todo.id} >
-          <ul  className='list-unstyled'>
-            <li>ID : {todo.id}</li>
-            <li>TITLE : {todo.title}</li>
-            <li>Completed : {String(todo.completed)}</li>
-            <li>userId : {todo.userId}</li>
+          <ul className='list-unstyled'>
+            <li><strong>ID : {todo.id}</strong></li>
+            <li><strong>TITLE : {todo.title}</strong></li>
+            <p>Body : {todo.body}</p>
           </ul>
         </div>
       ))}
