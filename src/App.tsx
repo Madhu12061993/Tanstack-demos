@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import './App.css'
 
 
@@ -27,13 +27,19 @@ const FetchPosts = async (newpost: Omit<FetchTodos, 'id'>): Promise<FetchTodos> 
   return res.json();
 };
 function App() {
+  const queryclient = useQueryClient();
   const { data, isLoading, error } = useQuery<FetchTodos[]>({
-    queryKey: ['todo'],
+    queryKey: ['posts'],
     queryFn: fetchTodos
   });
 
   const { mutate, isError, isPending, isSuccess } = useMutation({
-    mutationFn: FetchPosts 
+    mutationFn: FetchPosts ,
+    onSuccess:() => {
+      queryclient.invalidateQueries({
+        queryKey:['posts']
+      });
+    }
   })
   if (isLoading) return <p>Loading....</p>
   if (error || isError) return <p>Error</p>
