@@ -17,7 +17,7 @@ const fetchTodos = async (): Promise<FetchTodos[]> => {
 };
 
 const FetchPosts = async (newpost: Omit<FetchTodos, 'id'>): Promise<FetchTodos> => {
-  const res = await fetch('https://jsonplaceholder.typicode.com/posts', {
+  const res = await fetch('https://jsonplacdfreholder.typicode.com/posts', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -33,7 +33,7 @@ function App() {
     queryFn: fetchTodos,
     staleTime : 4000,  //refresh click =>  4sec(manual)
     refetchOnWindowFocus:false,
-    
+    retry:5,
   });
   console.log(error);
 
