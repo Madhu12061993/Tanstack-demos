@@ -31,8 +31,9 @@ function App() {
   const { data, isLoading, error } = useQuery<FetchTodos[]>({
     queryKey: ['posts'],
     queryFn: fetchTodos,
-    // staleTime : 4000,  //refresh click =>  4sec(manual)
-    refetchInterval : 4000,  //refetch (automatically)
+    staleTime : 4000,  //refresh click =>  4sec(manual)
+    refetchOnWindowFocus:false,
+    
   });
   console.log(error);
 
