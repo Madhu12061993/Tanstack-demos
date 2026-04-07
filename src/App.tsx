@@ -30,15 +30,20 @@ function App() {
   const queryclient = useQueryClient();
   const { data, isLoading, error } = useQuery<FetchTodos[]>({
     queryKey: ['posts'],
-    queryFn: fetchTodos
+    queryFn: fetchTodos,
+    // staleTime : 4000,  //refresh click =>  4sec(manual)
+    refetchInterval : 4000,  //refetch (automatically)
   });
 
   const { mutate, isError, isPending, isSuccess } = useMutation({
     mutationFn: FetchPosts ,
-    onSuccess:() => {
-      queryclient.invalidateQueries({
-        queryKey:['posts']
-      });
+    onSuccess:(newpost) => {
+
+      // queryclient.invalidateQueries({
+      //   queryKey:['posts']
+      // });
+      //created one json but it refresh => old posts shown 
+      queryclient.setQueryData(['posts'] , (oldposts : FetchTodos[]) => [...oldposts , newpost])
     }
   })
   if (isLoading) return <p>Loading....</p>
