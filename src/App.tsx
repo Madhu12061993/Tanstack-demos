@@ -34,6 +34,7 @@ function App() {
     // staleTime : 4000,  //refresh click =>  4sec(manual)
     refetchInterval : 4000,  //refetch (automatically)
   });
+  console.log(error);
 
   const { mutate, isError, isPending, isSuccess } = useMutation({
     mutationFn: FetchPosts ,
