@@ -7,7 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 const queryclient = new QueryClient({
-  defaultOptions: { queries: { staleTime:60000 , gcTime: 10 * (60 * 1000 ) } },
+  defaultOptions: { queries: { staleTime:60000 , gcTime: 10 * (60 * 1000 ) }},
 });
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
